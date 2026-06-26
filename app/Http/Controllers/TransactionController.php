@@ -92,10 +92,9 @@ class TransactionController extends Controller
             return back()->withErrors(['category_id' => 'Kategori tidak sesuai dengan jenis transaksi.'])->withInput();
         }
 
-        Transaction::create([
-            ...$validated,
-            'user_id' => Auth::id(),
-        ]);
+        // Menggunakan array_merge (Menggantikan spread operator agar lebih aman dari konflik token)
+        $dataToSave = array_merge($validated, ['user_id' => Auth::id()]);
+        Transaction::create($dataToSave);
 
         return redirect()->route('transactions.index')
             ->with('success', 'Transaksi berhasil dicatat.');
@@ -106,7 +105,6 @@ class TransactionController extends Controller
      */
     public function show(Transaction $transaction): View
     {
-        // Pastikan transaksi milik user yang login
         $this->authorize('view', $transaction);
 
         return view('transactions.show', compact('transaction'));
