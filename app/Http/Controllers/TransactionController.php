@@ -22,7 +22,7 @@ class TransactionController extends Controller
         $categoryId = $request->get('category_id');
         $search = trim((string) $request->get('search'));
 
-        $transactions = Transaction::forUser(Auth::id())
+        $filteredTransactions = Transaction::forUser(Auth::id())
             ->forMonth($month, $year)
             ->when(in_array($type, ['income', 'expense'], true), fn ($query) => $query->where('type', $type))
             ->when($categoryId, fn ($query) => $query->where('category_id', $categoryId))
@@ -32,28 +32,21 @@ class TransactionController extends Controller
                         ->orWhere('notes', 'like', "%{$search}%")
                         ->orWhere('reference_number', 'like', "%{$search}%");
                 });
-            })
+            });
+
+        $transactions = (clone $filteredTransactions)
             ->with('category')
             ->orderBy('transaction_date', 'desc')
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
-        $totals = Transaction::forUser(Auth::id())
-            ->forMonth($month, $year)
-            ->when(in_array($type, ['income', 'expense'], true), fn ($query) => $query->where('type', $type))
-            ->when($categoryId, fn ($query) => $query->where('category_id', $categoryId))
-            ->when($search !== '', function ($query) use ($search) {
-                $query->where(function ($query) use ($search) {
-                    $query->where('description', 'like', "%{$search}%")
-                        ->orWhere('notes', 'like', "%{$search}%")
-                        ->orWhere('reference_number', 'like', "%{$search}%");
-                });
-            })
-            ->selectRaw("
-                SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) as total_income,
-                SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) as total_expense
-            ")
-            ->first();
+        $totalRows = (clone $filteredTransactions)->get();
+        $totalIncome = $totalRows
+            ->where('type', 'income')
+            ->sum(fn (Transaction $transaction) => $transaction->amount);
+        $totalExpense = $totalRows
+            ->where('type', 'expense')
+            ->sum(fn (Transaction $transaction) => $transaction->amount);
 
         $categories = Category::forUser(Auth::id())
             ->orderBy('type')
@@ -62,8 +55,8 @@ class TransactionController extends Controller
 
         return view('transactions.index', [
             'transactions'  => $transactions,
-            'totalIncome'   => $totals->total_income ?? 0,
-            'totalExpense'  => $totals->total_expense ?? 0,
+            'totalIncome'   => $totalIncome,
+            'totalExpense'  => $totalExpense,
             'selectedMonth' => $month,
             'selectedYear'  => $year,
             'selectedType' => $type,

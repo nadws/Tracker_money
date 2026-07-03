@@ -18,22 +18,20 @@ class DashboardController extends Controller
         $year = now()->year;
 
         // ── Ringkasan bulan ini ──────────────────────────────────
-        $summary = Transaction::forUser($userId)
+        $monthlyTransactions = Transaction::forUser($userId)
             ->forMonth($month, $year)
-            ->selectRaw("
-                SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END)  as total_income,
-                SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) as total_expense,
-                COUNT(*) as total_transactions
-            ")
-            ->first();
+            ->with('category')
+            ->get();
 
-        $totalIncome   = $summary->total_income   ?? 0;
-        $totalExpense  = $summary->total_expense  ?? 0;
-        $netProfit     = $totalIncome - $totalExpense;
-        $monthlyIncome = $totalIncome;
-        $monthlyExpense = $totalExpense;
-        $monthlyNet = $netProfit;
-        $transactionCount = $summary->total_transactions ?? 0;
+        $monthlyIncome = $monthlyTransactions
+            ->where('type', 'income')
+            ->sum(fn (Transaction $transaction) => $transaction->amount);
+        $monthlyExpense = $monthlyTransactions
+            ->where('type', 'expense')
+            ->sum(fn (Transaction $transaction) => $transaction->amount);
+        $monthlyNet = $monthlyIncome - $monthlyExpense;
+        $netProfit = $monthlyNet;
+        $transactionCount = $monthlyTransactions->count();
 
         // ── 5 transaksi terbaru ──────────────────────────────────
         $recentTransactions = Transaction::forUser($userId)
@@ -44,27 +42,41 @@ class DashboardController extends Controller
             ->get();
 
         // ── Pengeluaran per kategori bulan ini (untuk chart) ─────
-        $expenseByCategory = Transaction::forUser($userId)
-            ->forMonth($month, $year)
-            ->expense()
-            ->with('category')
-            ->selectRaw('category_id, SUM(amount) as total')
+        $expenseByCategory = $monthlyTransactions
+            ->where('type', 'expense')
             ->groupBy('category_id')
-            ->orderByDesc('total')
-            ->limit(5)
-            ->get();
+            ->map(function ($transactions) {
+                $firstTransaction = $transactions->first();
+
+                return (object) [
+                    'category' => $firstTransaction?->category,
+                    'total' => $transactions->sum(fn (Transaction $transaction) => $transaction->amount),
+                ];
+            })
+            ->sortByDesc('total')
+            ->take(5)
+            ->values();
 
 
-        $totalIncome = Transaction::where('user_id', $userId)->where('type', 'income')->sum('amount');
-        $totalExpense = Transaction::where('user_id', $userId)->where('type', 'expense')->sum('amount');
+        $allTransactions = Transaction::where('user_id', $userId)->get();
+        $totalIncome = $allTransactions
+            ->where('type', 'income')
+            ->sum(fn (Transaction $transaction) => $transaction->amount);
+        $totalExpense = $allTransactions
+            ->where('type', 'expense')
+            ->sum(fn (Transaction $transaction) => $transaction->amount);
         $saldo = $totalIncome - $totalExpense;
         $chartData = Transaction::where('user_id', $userId)
-            ->selectRaw('transaction_date, 
-                    SUM(CASE WHEN type = "income" THEN amount ELSE 0 END) as income,
-                    SUM(CASE WHEN type = "expense" THEN amount ELSE 0 END) as expense')
-            ->groupBy('transaction_date')
-            ->orderBy('transaction_date', 'asc')
-            ->get();
+            ->where('transaction_date', '>=', now()->subDays(29)->toDateString())
+            ->orderBy('transaction_date')
+            ->get()
+            ->groupBy(fn (Transaction $transaction) => $transaction->transaction_date->toDateString())
+            ->map(fn ($transactions, $date) => (object) [
+                'transaction_date' => $date,
+                'income' => $transactions->where('type', 'income')->sum(fn (Transaction $transaction) => $transaction->amount),
+                'expense' => $transactions->where('type', 'expense')->sum(fn (Transaction $transaction) => $transaction->amount),
+            ])
+            ->values();
 
         return view('dashboard', compact(
             'totalIncome',

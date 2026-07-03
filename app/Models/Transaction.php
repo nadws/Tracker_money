@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Carbon;
 
 class Transaction extends Model
@@ -16,6 +17,7 @@ class Transaction extends Model
         'category_id',
         'type',
         'amount',
+        'amount_encrypted',
         'transaction_date',
         'description',
         'notes',
@@ -23,7 +25,6 @@ class Transaction extends Model
     ];
 
     protected $casts = [
-        'amount'           => 'decimal:2',
         'transaction_date' => 'date',
     ];
 
@@ -80,6 +81,25 @@ class Transaction extends Model
     public function getFormattedAmountAttribute(): string
     {
         return 'Rp ' . number_format($this->amount, 0, ',', '.');
+    }
+
+    public function getAmountAttribute($value): float
+    {
+        $encryptedAmount = $this->attributes['amount_encrypted'] ?? null;
+
+        if ($encryptedAmount) {
+            return (float) Crypt::decryptString($encryptedAmount);
+        }
+
+        return (float) $value;
+    }
+
+    public function setAmountAttribute($value): void
+    {
+        $amount = number_format((float) $value, 2, '.', '');
+
+        $this->attributes['amount_encrypted'] = Crypt::encryptString($amount);
+        $this->attributes['amount'] = 0;
     }
 
     /** Apakah transaksi ini pemasukan? */
