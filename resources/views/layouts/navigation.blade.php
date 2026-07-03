@@ -21,6 +21,10 @@
                         class="text-slate-600 hover:text-emerald-700 font-bold">
                         Transaksi
                     </x-nav-link>
+                    <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')"
+                        class="text-slate-600 hover:text-emerald-700 font-bold">
+                        Kategori
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -90,6 +94,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.index')">
                 Transaksi
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')">
+                Kategori
             </x-responsive-nav-link>
         </div>
 
