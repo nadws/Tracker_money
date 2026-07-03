@@ -14,8 +14,8 @@ class DashboardController extends Controller
     public function index(): View
     {
         $userId = Auth::id();
-        $month  = now()->month;
-        $year   = now()->year;
+        $month = now()->month;
+        $year = now()->year;
 
         // ── Ringkasan bulan ini ──────────────────────────────────
         $summary = Transaction::forUser($userId)
@@ -30,6 +30,10 @@ class DashboardController extends Controller
         $totalIncome   = $summary->total_income   ?? 0;
         $totalExpense  = $summary->total_expense  ?? 0;
         $netProfit     = $totalIncome - $totalExpense;
+        $monthlyIncome = $totalIncome;
+        $monthlyExpense = $totalExpense;
+        $monthlyNet = $netProfit;
+        $transactionCount = $summary->total_transactions ?? 0;
 
         // ── 5 transaksi terbaru ──────────────────────────────────
         $recentTransactions = Transaction::forUser($userId)
@@ -68,6 +72,10 @@ class DashboardController extends Controller
             'netProfit',
             'recentTransactions',
             'expenseByCategory',
+            'monthlyIncome',
+            'monthlyExpense',
+            'monthlyNet',
+            'transactionCount',
             'totalIncome',
             'totalExpense',
             'saldo',

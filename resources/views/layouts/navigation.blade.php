@@ -1,29 +1,24 @@
-<nav x-data="{ open: false }" class="bg-white/40 backdrop-blur-md">
+<nav x-data="{ open: false }" class="bg-transparent">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}"
-                        class="flex items-center space-x-2.5 group transition duration-200">
-                        <div
-                            class="p-2 bg-indigo-50 rounded-xl text-indigo-600 group-hover:bg-indigo-100 transition-colors">
-                            <x-application-logo class="h-6 w-6" />
-                        </div>
+                    <a href="{{ route('dashboard') }}" class="flex items-center space-x-2.5 group transition duration-200">
+                        <x-application-logo class="h-9 w-9 text-emerald-600" />
 
-                        <span
-                            class="font-bold text-lg tracking-tight text-slate-800 group-hover:text-slate-900 transition-colors">
-                            Akunting<span class="text-indigo-600">Pro</span>
+                        <span class="font-extrabold text-lg tracking-tight text-slate-900 transition-colors">
+                            Akunting<span class="text-emerald-600">Pro</span>
                         </span>
                     </a>
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
-                        class="text-slate-600 hover:text-slate-900 font-medium">
+                        class="text-slate-600 hover:text-emerald-700 font-bold">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.*')"
-                        class="text-slate-600 hover:text-slate-900 font-medium">
+                    <x-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.index') || request()->routeIs('transactions.create') || request()->routeIs('transactions.edit') || request()->routeIs('transactions.show')"
+                        class="text-slate-600 hover:text-emerald-700 font-bold">
                         Transaksi
                     </x-nav-link>
                 </div>
@@ -33,9 +28,9 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button
-                            class="inline-flex items-center px-3 py-1.5 border border-slate-200 text-sm leading-4 font-medium rounded-full text-slate-600 bg-white shadow-sm hover:text-slate-800 hover:bg-slate-50 focus:outline-none transition ease-in-out duration-150">
+                            class="inline-flex items-center px-3 py-1.5 border border-emerald-100 text-sm leading-4 font-bold rounded-full text-slate-700 bg-white shadow-sm shadow-emerald-100/60 hover:text-emerald-700 hover:bg-emerald-50 focus:outline-none transition ease-in-out duration-150">
                             <div
-                                class="h-6 w-6 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs me-2 uppercase">
+                                class="h-7 w-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-extrabold text-xs me-2 uppercase">
                                 {{ substr(Auth::user()->name, 0, 2) }}
                             </div>
 
@@ -75,7 +70,7 @@
 
             <div class="-me-2 flex items-center sm:hidden">
                 <button @click="open = ! open"
-                    class="inline-flex items-center justify-center p-2 rounded-xl text-slate-400 hover:text-slate-500 hover:bg-slate-100 focus:outline-none transition duration-150 ease-in-out">
+                    class="inline-flex items-center justify-center p-2 rounded-xl text-slate-500 hover:text-emerald-700 hover:bg-emerald-50 focus:outline-none transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex"
                             stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -88,7 +83,7 @@
         </div>
     </div>
 
-    <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden border-t border-slate-100 bg-white">
+    <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden border-t border-emerald-100 bg-white">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
@@ -98,10 +93,10 @@
             </x-responsive-nav-link>
         </div>
 
-        <div class="pt-4 pb-3 border-t border-slate-100 bg-slate-50/50">
+        <div class="pt-4 pb-3 border-t border-emerald-100 bg-emerald-50/50">
             <div class="px-4 flex items-center space-x-3 mb-3">
                 <div
-                    class="h-9 w-9 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm uppercase">
+                    class="h-9 w-9 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-sm uppercase">
                     {{ substr(Auth::user()->name, 0, 2) }}
                 </div>
                 <div>

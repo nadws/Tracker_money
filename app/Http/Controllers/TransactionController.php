@@ -18,22 +18,47 @@ class TransactionController extends Controller
     {
         $month = (int) $request->get('month', now()->month);
         $year  = (int) $request->get('year', now()->year);
+        $type = $request->get('type');
+        $categoryId = $request->get('category_id');
+        $search = trim((string) $request->get('search'));
 
-        // Ambil transaksi user yang login, filter per bulan
         $transactions = Transaction::forUser(Auth::id())
             ->forMonth($month, $year)
-            ->with('category')                // eager load relasi kategori
+            ->when(in_array($type, ['income', 'expense'], true), fn ($query) => $query->where('type', $type))
+            ->when($categoryId, fn ($query) => $query->where('category_id', $categoryId))
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('description', 'like', "%{$search}%")
+                        ->orWhere('notes', 'like', "%{$search}%")
+                        ->orWhere('reference_number', 'like', "%{$search}%");
+                });
+            })
+            ->with('category')
             ->orderBy('transaction_date', 'desc')
+            ->orderBy('created_at', 'desc')
             ->paginate(20);
 
-        // Hitung total pemasukan & pengeluaran bulan ini
         $totals = Transaction::forUser(Auth::id())
             ->forMonth($month, $year)
+            ->when(in_array($type, ['income', 'expense'], true), fn ($query) => $query->where('type', $type))
+            ->when($categoryId, fn ($query) => $query->where('category_id', $categoryId))
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('description', 'like', "%{$search}%")
+                        ->orWhere('notes', 'like', "%{$search}%")
+                        ->orWhere('reference_number', 'like', "%{$search}%");
+                });
+            })
             ->selectRaw("
                 SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) as total_income,
                 SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) as total_expense
             ")
             ->first();
+
+        $categories = Category::forUser(Auth::id())
+            ->orderBy('type')
+            ->orderBy('name')
+            ->get();
 
         return view('transactions.index', [
             'transactions'  => $transactions,
@@ -41,6 +66,10 @@ class TransactionController extends Controller
             'totalExpense'  => $totals->total_expense ?? 0,
             'selectedMonth' => $month,
             'selectedYear'  => $year,
+            'selectedType' => $type,
+            'selectedCategory' => $categoryId,
+            'search' => $search,
+            'categories' => $categories,
         ]);
     }
 
@@ -167,4 +196,5 @@ class TransactionController extends Controller
         return redirect()->route('transactions.index')
             ->with('success', 'Transaksi berhasil dihapus.');
     }
+
 }
