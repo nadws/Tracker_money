@@ -151,7 +151,7 @@
                         <p class="px-5 pb-2 pt-6 text-lg font-medium text-slate-400">{{ \Carbon\Carbon::parse($date)->translatedFormat('d M Y') }}</p>
 
                         @foreach ($items as $trx)
-                            <a href="{{ route('transactions.show', $trx) }}" class="grid grid-cols-[2.5rem_minmax(0,1fr)_auto] gap-2 px-4 py-4 active:bg-slate-50">
+                            <div class="grid grid-cols-[2.5rem_minmax(0,1fr)_auto] gap-2 px-4 py-4">
                                 <span class="mt-1 flex h-9 w-9 items-center justify-center rounded-xl text-emerald-500">
                                     @if ($trx->isIncome())
                                         <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
@@ -175,11 +175,15 @@
                                             <br>{{ $trx->notes }}
                                         @endif
                                     </span>
+                                    <span class="mt-3 flex items-center gap-2">
+                                        <a href="{{ route('transactions.show', $trx) }}" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-extrabold text-slate-700 active:bg-slate-200">Detail</a>
+                                        <a href="{{ route('transactions.edit', $trx) }}" class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-extrabold text-emerald-700 active:bg-emerald-100">Edit</a>
+                                    </span>
                                 </span>
                                 <span class="max-w-[8.75rem] whitespace-nowrap pt-1 text-right text-base font-extrabold {{ $trx->isIncome() ? 'text-emerald-600' : 'text-slate-950' }}">
                                     {{ $trx->isIncome() ? '+' : '-' }} {{ $formatRupiah($trx->amount) }}<sup class="text-xs">00</sup>
                                 </span>
-                            </a>
+                            </div>
                         @endforeach
                     </div>
                 @empty
