@@ -12,7 +12,7 @@
     @endphp
 
     <div class="min-h-screen bg-emerald-500 md:hidden">
-        <section class="relative overflow-hidden bg-gradient-to-b from-emerald-400 via-emerald-500 to-green-600 px-6 pb-28 pt-7 text-white">
+        <section class="relative overflow-hidden bg-gradient-to-b from-emerald-400 via-emerald-500 to-green-600 px-6 pb-20 pt-7 text-white">
             <div class="pointer-events-none absolute inset-0 opacity-30">
                 <div class="absolute left-[-18%] top-24 h-32 w-[140%] rotate-[-9deg] rounded-[100%] border-t-4 border-white/40"></div>
                 <div class="absolute left-[-24%] top-44 h-40 w-[150%] rotate-[-11deg] rounded-[100%] border-t-4 border-white/25"></div>
@@ -77,7 +77,7 @@
             </div>
         </section>
 
-        <section x-data="{ filters: false }" class="-mt-16 rounded-t-[2rem] bg-white pb-8 shadow-2xl">
+        <section x-data="{ filters: false }" class="-mt-6 rounded-t-[2rem] bg-white pb-8 shadow-2xl">
             <div class="mx-auto pt-3">
                 <div class="mx-auto h-1.5 w-20 rounded-full bg-slate-500/80"></div>
             </div>
@@ -151,7 +151,7 @@
                         <p class="px-5 pb-2 pt-6 text-lg font-medium text-slate-400">{{ \Carbon\Carbon::parse($date)->translatedFormat('d M Y') }}</p>
 
                         @foreach ($items as $trx)
-                            <a href="{{ route('transactions.show', $trx) }}" class="grid grid-cols-[3.25rem_1fr_auto] gap-3 px-5 py-4 active:bg-slate-50">
+                            <a href="{{ route('transactions.show', $trx) }}" class="grid grid-cols-[2.5rem_minmax(0,1fr)_auto] gap-2 px-4 py-4 active:bg-slate-50">
                                 <span class="mt-1 flex h-9 w-9 items-center justify-center rounded-xl text-emerald-500">
                                     @if ($trx->isIncome())
                                         <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
@@ -166,8 +166,8 @@
                                     @endif
                                 </span>
                                 <span class="min-w-0">
-                                    <span class="block truncate text-xl font-extrabold text-slate-950">{{ $trx->category->name ?? $trx->description }}</span>
-                                    <span class="mt-1 line-clamp-2 block text-base leading-snug text-slate-500">
+                                    <span class="block truncate text-lg font-extrabold text-slate-950">{{ $trx->category->name ?? $trx->description }}</span>
+                                    <span class="mt-1 line-clamp-2 block text-sm leading-snug text-slate-500">
                                         {{ $trx->description }}
                                         @if ($trx->reference_number)
                                             <br>{{ $trx->reference_number }}
@@ -176,7 +176,7 @@
                                         @endif
                                     </span>
                                 </span>
-                                <span class="whitespace-nowrap pt-1 text-right text-xl font-extrabold {{ $trx->isIncome() ? 'text-emerald-600' : 'text-slate-950' }}">
+                                <span class="max-w-[8.75rem] whitespace-nowrap pt-1 text-right text-base font-extrabold {{ $trx->isIncome() ? 'text-emerald-600' : 'text-slate-950' }}">
                                     {{ $trx->isIncome() ? '+' : '-' }} {{ $formatRupiah($trx->amount) }}<sup class="text-xs">00</sup>
                                 </span>
                             </a>
