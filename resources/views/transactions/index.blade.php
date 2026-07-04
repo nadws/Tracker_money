@@ -11,8 +11,8 @@
         $queryBase = request()->except(['month', 'year', 'page']);
     @endphp
 
-    <div class="min-h-screen bg-sky-500 md:hidden">
-        <section class="relative overflow-hidden bg-gradient-to-b from-sky-400 via-sky-500 to-sky-500 px-6 pb-28 pt-7 text-white">
+    <div class="min-h-screen bg-emerald-500 md:hidden">
+        <section class="relative overflow-hidden bg-gradient-to-b from-emerald-400 via-emerald-500 to-green-600 px-6 pb-28 pt-7 text-white">
             <div class="pointer-events-none absolute inset-0 opacity-30">
                 <div class="absolute left-[-18%] top-24 h-32 w-[140%] rotate-[-9deg] rounded-[100%] border-t-4 border-white/40"></div>
                 <div class="absolute left-[-24%] top-44 h-40 w-[150%] rotate-[-11deg] rounded-[100%] border-t-4 border-white/25"></div>
@@ -43,7 +43,7 @@
 
             <div class="relative mt-9 grid grid-cols-4 gap-4 text-center">
                 <a href="{{ route('transactions.create', ['type' => 'income']) }}" class="space-y-2">
-                    <span class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-sky-600 shadow-lg">
+                    <span class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-emerald-600 shadow-lg">
                         <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                             <path d="M12 19V5M6 11l6-6 6 6" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
@@ -51,7 +51,7 @@
                     <span class="block text-xs font-semibold leading-tight">Tambah<br>Pemasukan</span>
                 </a>
                 <a href="{{ route('transactions.create', ['type' => 'expense']) }}" class="space-y-2">
-                    <span class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-sky-600 shadow-lg">
+                    <span class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-emerald-600 shadow-lg">
                         <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                             <path d="M12 5v14M18 13l-6 6-6-6" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
@@ -59,7 +59,7 @@
                     <span class="block text-xs font-semibold leading-tight">Tambah<br>Pengeluaran</span>
                 </a>
                 <a href="{{ route('categories.index') }}" class="space-y-2">
-                    <span class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-sky-600 shadow-lg">
+                    <span class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-emerald-600 shadow-lg">
                         <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                             <path d="M4 7h16M4 12h16M4 17h10" stroke-linecap="round" />
                         </svg>
@@ -67,7 +67,7 @@
                     <span class="block text-xs font-semibold leading-tight">Kelola<br>Kategori</span>
                 </a>
                 <a href="{{ route('dashboard') }}" class="space-y-2">
-                    <span class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-sky-600 shadow-lg">
+                    <span class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-emerald-600 shadow-lg">
                         <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                             <path d="M4 19V9M10 19V5M16 19v-7M22 19H2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
@@ -84,7 +84,11 @@
 
             <div class="flex items-center justify-between px-5 pt-7">
                 <h2 class="text-2xl font-extrabold text-slate-700">Transaksi</h2>
-                <button type="button" @click="filters = ! filters" class="text-sm font-bold text-sky-600">Filter</button>
+                <button type="button" @click="filters = ! filters" class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 active:bg-emerald-100" aria-label="Buka filter">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <path d="M4 6h16M7 12h10M10 18h4" stroke-linecap="round" />
+                    </svg>
+                </button>
             </div>
 
             @if (session('success'))
@@ -99,45 +103,45 @@
                         class="relative min-w-20 px-4 pb-3 text-center text-xl font-medium {{ $tab->month === (int) $selectedMonth && $tab->year === (int) $selectedYear ? 'text-slate-950' : 'text-slate-500' }}">
                         {{ $tab->translatedFormat('M') }}
                         @if ($tab->month === (int) $selectedMonth && $tab->year === (int) $selectedYear)
-                            <span class="absolute inset-x-3 bottom-0 h-1.5 rounded-t-full bg-sky-500"></span>
+                            <span class="absolute inset-x-3 bottom-0 h-1.5 rounded-t-full bg-emerald-500"></span>
                         @endif
                     </a>
                 @endforeach
 
-                <button type="button" @click="filters = ! filters" class="ml-auto flex h-11 w-11 shrink-0 items-center justify-center border-l border-slate-100 text-sky-600" aria-label="Cari transaksi">
+                <button type="button" @click="filters = ! filters" class="ml-auto flex h-11 w-11 shrink-0 items-center justify-center border-l border-slate-100 text-emerald-600" aria-label="Buka pencarian transaksi">
                     <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
                         <path d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke-linecap="round" />
                     </svg>
                 </button>
             </div>
 
-            <form x-show="filters" style="display: none;" method="GET" action="{{ route('transactions.index') }}" class="mx-5 mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-4">
+            <form x-cloak x-show="filters" x-transition.opacity.duration.150ms method="GET" action="{{ route('transactions.index') }}" class="mx-5 mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-4">
                 <div class="grid gap-3">
                     <div class="grid grid-cols-2 gap-3">
-                        <select name="month" class="rounded-xl border-slate-200 text-sm focus:border-sky-500 focus:ring-sky-500">
+                        <select name="month" class="rounded-xl border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
                             @foreach (range(1, 12) as $m)
                                 <option value="{{ $m }}" @selected($selectedMonth == $m)>{{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}</option>
                             @endforeach
                         </select>
-                        <select name="year" class="rounded-xl border-slate-200 text-sm focus:border-sky-500 focus:ring-sky-500">
+                        <select name="year" class="rounded-xl border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
                             @foreach (range(now()->year, now()->year - 5) as $y)
                                 <option value="{{ $y }}" @selected($selectedYear == $y)>{{ $y }}</option>
                             @endforeach
                         </select>
                     </div>
-                    <select name="type" class="rounded-xl border-slate-200 text-sm focus:border-sky-500 focus:ring-sky-500">
+                    <select name="type" class="rounded-xl border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
                         <option value="">Semua jenis</option>
                         <option value="income" @selected($selectedType === 'income')>Pemasukan</option>
                         <option value="expense" @selected($selectedType === 'expense')>Pengeluaran</option>
                     </select>
-                    <select name="category_id" class="rounded-xl border-slate-200 text-sm focus:border-sky-500 focus:ring-sky-500">
+                    <select name="category_id" class="rounded-xl border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
                         <option value="">Semua kategori</option>
                         @foreach ($categories as $category)
                             <option value="{{ $category->id }}" @selected((string) $selectedCategory === (string) $category->id)>{{ $category->name }}</option>
                         @endforeach
                     </select>
-                    <input type="search" name="search" value="{{ $search }}" placeholder="Cari deskripsi, catatan, referensi" class="rounded-xl border-slate-200 text-sm focus:border-sky-500 focus:ring-sky-500">
-                    <button type="submit" class="rounded-full bg-sky-500 px-5 py-2.5 text-sm font-extrabold text-white">Terapkan</button>
+                    <input type="search" name="search" value="{{ $search }}" placeholder="Cari deskripsi, catatan, referensi" class="rounded-xl border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
+                    <button type="submit" class="rounded-full bg-emerald-500 px-5 py-2.5 text-sm font-extrabold text-white">Terapkan</button>
                 </div>
             </form>
 
@@ -148,7 +152,7 @@
 
                         @foreach ($items as $trx)
                             <a href="{{ route('transactions.show', $trx) }}" class="grid grid-cols-[3.25rem_1fr_auto] gap-3 px-5 py-4 active:bg-slate-50">
-                                <span class="mt-1 flex h-9 w-9 items-center justify-center rounded-xl text-sky-500">
+                                <span class="mt-1 flex h-9 w-9 items-center justify-center rounded-xl text-emerald-500">
                                     @if ($trx->isIncome())
                                         <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                                             <path d="M12 19V5M6 11l6-6 6 6" stroke-linecap="round" stroke-linejoin="round" />
@@ -182,7 +186,7 @@
                     <div class="px-6 py-16 text-center">
                         <p class="text-base font-bold text-slate-700">Belum ada transaksi bulan ini.</p>
                         <p class="mt-1 text-sm text-slate-500">Catat transaksi pertama atau ubah filter pencarian.</p>
-                        <a href="{{ route('transactions.create') }}" class="mt-5 inline-flex rounded-full bg-sky-500 px-5 py-2.5 text-sm font-extrabold text-white">Catat Transaksi</a>
+                        <a href="{{ route('transactions.create') }}" class="mt-5 inline-flex rounded-full bg-emerald-500 px-5 py-2.5 text-sm font-extrabold text-white">Catat Transaksi</a>
                     </div>
                 @endforelse
             </div>
