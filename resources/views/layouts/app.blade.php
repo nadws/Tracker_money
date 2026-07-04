@@ -16,7 +16,7 @@
 
 <body class="font-sans antialiased text-slate-900 h-full selection:bg-emerald-500 selection:text-white">
     <div class="min-h-screen bg-[#f4fbf7]">
-        <div class="sticky top-0 z-40 border-b border-emerald-100/80 bg-white/85 backdrop-blur-xl">
+        <div class="sticky top-0 z-40 border-b border-emerald-100/80 bg-white/85 backdrop-blur-xl {{ isset($mobileFullScreen) ? 'hidden md:block' : '' }}">
             @include('layouts.navigation')
         </div>
 
@@ -32,8 +32,8 @@
             </header>
         @endisset
 
-        <main class="py-8">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <main class="{{ isset($mobileFullScreen) ? 'py-0 md:py-8' : 'py-8' }}">
+            <div class="max-w-7xl mx-auto {{ isset($mobileFullScreen) ? 'px-0 md:px-4 lg:px-8' : 'px-4 sm:px-6 lg:px-8' }}">
                 {{ $slot }}
             </div>
         </main>

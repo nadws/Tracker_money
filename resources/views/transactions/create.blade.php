@@ -11,7 +11,7 @@
             <a href="{{ route('transactions.index') }}" class="text-sm font-bold text-slate-600 hover:text-slate-900">Kembali</a>
         </div>
 
-        <form method="POST" action="{{ route('transactions.store') }}" x-data="{ type: @js(old('type', 'income')) }" class="rounded-[1.5rem] border border-emerald-100 bg-white p-6 shadow-sm shadow-emerald-100/60">
+        <form method="POST" action="{{ route('transactions.store') }}" x-data="{ type: @js(old('type', request('type', 'income'))) }" class="rounded-[1.5rem] border border-emerald-100 bg-white p-6 shadow-sm shadow-emerald-100/60">
             @csrf
 
             <div class="space-y-5">
